@@ -1,0 +1,31 @@
+3 files, 15 findings
+HIGH     DKR001 legacy/Dockerfile:2
+         final stage has no USER instruction: the container runs as root
+HIGH     DKR005 legacy/Dockerfile:3
+         ENV DB_PASSWORD sets a credential: it stays in the image layers and history
+HIGH     DKR003 legacy/Dockerfile:8
+         remote script piped into a shell: the build runs whatever the server returns
+HIGH     DKR001 legacy/Dockerfile.worker:3
+         final USER is root
+MEDIUM   DKR002 legacy/Dockerfile:2
+         base image ubuntu:latest uses the latest tag
+MEDIUM   DKR004 legacy/Dockerfile:5
+         ADD from a URL: no checksum, content can change between builds; use curl with a checksum
+MEDIUM   DKR007 legacy/Dockerfile:9
+         chmod 777: world-writable files in the image
+MEDIUM   DKR011 legacy/Dockerfile:9
+         TLS verification is disabled in this step
+MEDIUM   DKR010 legacy/Dockerfile:11
+         port 22 exposed: containers should not run sshd
+MEDIUM   DKR002 legacy/Dockerfile.worker:1
+         base image node has no tag: the build is not reproducible
+MEDIUM   DKR009 legacy/Dockerfile.worker:2
+         sudo in a build step: run the step as root or drop privileges with USER
+LOW      DKR008 legacy/Dockerfile:2
+         no HEALTHCHECK in the final stage
+LOW      DKR004 legacy/Dockerfile:6
+         ADD of a local file that is not an archive: use COPY
+LOW      DKR006 legacy/Dockerfile:7
+         apt-get install without --no-install-recommends: larger image, more packages to patch
+LOW      DKR008 legacy/Dockerfile.worker:1
+         no HEALTHCHECK in the final stage
