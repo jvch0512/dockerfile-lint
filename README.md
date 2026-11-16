@@ -2,6 +2,8 @@
 
 dockerfile-lint reads Dockerfiles the way the builder does (line continuations, comments, multi-stage builds) and reports the choices that weaken the resulting image or its build: a container that runs as root, base images that are not pinned, remote scripts piped into a shell, credentials baked into layers and TLS verification switched off. Each finding has the file and the line where the instruction starts.
 
+![Terminal demo of dockerfile-lint on its sample data](docs/demo.svg)
+
 **Live demo:** https://jvch0512.github.io/dockerfile-lint/ (Synthetic Dockerfiles.)
 
 Kotlin (JVM), standard library only. The demo page is rendered from the tool's `--tsv` output by `scripts/site.py` (Python 3, only needed to regenerate the page).
@@ -52,3 +54,17 @@ make test    # 74 checks, incl. 3000-case fuzzing and CLI exit codes
 ```
 
 MIT.
+
+## Code scanning (SARIF)
+
+`scripts/tsv2sarif.py` converts the `--tsv` output into SARIF 2.1.0, so findings show up in GitHub code scanning:
+
+```sh
+java -jar build/dockerfile-lint.jar examples --tsv 2>/dev/null | python3 scripts/tsv2sarif.py --tool dockerfile-lint --prefix examples > results.sarif
+```
+
+Upload `results.sarif` with `github/codeql-action/upload-sarif`. Severities map to SARIF levels (critical and high to error, medium to warning, low and info to note) and to a `security-severity` score.
+
+## Validated on real data
+
+This tool was run on public corpora and the false positives it produced were fixed. Corpus, counts and bugs found are in [docs/validation.md](docs/validation.md).
